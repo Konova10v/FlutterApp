@@ -17,7 +17,7 @@ class _ShopViewState extends State<ShopView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: kBackgroundShop,
       body: Container(
         child: SizedBox(
           child: Column(
@@ -27,7 +27,7 @@ class _ShopViewState extends State<ShopView> {
 
               CollectionsView(),
 
-              MainScreenCollection()
+              CarouselCollection(),
             ],
           ),
         ),
@@ -153,19 +153,16 @@ class CollectionCell extends StatelessWidget {
   }
 }
 
-class MainScreenCollection extends StatefulWidget {
+class CarouselCollection extends StatefulWidget {
   @override
-  State<MainScreenCollection> createState() => _MainScreenCollectionState();
+  State<CarouselCollection> createState() => _CarouselCollectionState();
 }
 
-class _MainScreenCollectionState extends State<MainScreenCollection> {
+class _CarouselCollectionState extends State<CarouselCollection> {
   List<CarouselModel> test = [
-    CarouselModel('', '', ''),
-  ];
-
-  List<String> images = [
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTIZccfNPnqalhrWev-Xo7uBhkor57_rKbkw&usqp=CAU",
-    "https://wallpaperaccess.com/full/2637581.jpg"
+    CarouselModel('model.jpg', 'Hoodie Rose', '295'),
+    CarouselModel('woman.jpg', 'Hoodie Rose', '305'),
+    CarouselModel('kid.jpg', 'Hoodie Rose', '305'),
   ];
 
   late PageController _pageController;
@@ -180,27 +177,43 @@ class _MainScreenCollectionState extends State<MainScreenCollection> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200,
-      width: MediaQuery.of(context).size.width,
-      child:   PageView.builder(
-          itemCount: images.length,
-          pageSnapping: true,
-          controller: _pageController,
-          onPageChanged: (page) {
-            setState(() {
-              activePage = page;
-            });
-          },
-          itemBuilder: (context, pagePosition) {
-            return Container(
-              margin: EdgeInsets.all(10),
-              child: Image.network(images[pagePosition],fit: BoxFit.cover,),
-            );
-          }),
+    return Column(
+      children: [
+        SizedBox(
+          height: 300,
+          child: PageView.builder(
+              itemCount: test.length,
+              pageSnapping: true,
+              controller: _pageController,
+              onPageChanged: (page) {
+                setState(() {
+                  activePage = page;
+                });
+                },
+              itemBuilder: (context, pagePosition) {
+                return Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 5),
+                    image: DecorationImage(
+                        image:  AssetImage('assets/${test[pagePosition].image}'),
+                        fit: BoxFit.fill
+                    ),
+                  ),
+                );
+              }),
+        ),
+
+        SizedBox(height: 20,),
+        Text('${test[activePage].name}',
+          style: TextStyle(fontFamily: 'JosefinSansBold', fontSize: 25,),
+        ),
+
+        SizedBox(height: 10,),
+        Text('\$ ${test[activePage].price}',
+          style: TextStyle(fontFamily: 'JosefinSansBold', fontSize: 25, color: kOrangeColor),
+        ),
+      ],
     );
   }
 }
-
-
-
