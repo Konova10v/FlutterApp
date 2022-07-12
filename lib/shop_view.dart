@@ -4,6 +4,7 @@ import 'colors.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 import 'model/collection_model.dart';
 import 'model/carousel_model.dart';
+import 'item_detail_view.dart';
 
 
 class ShopView extends StatefulWidget {
@@ -177,43 +178,56 @@ class _CarouselCollectionState extends State<CarouselCollection> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 300,
-          child: PageView.builder(
-              itemCount: test.length,
-              pageSnapping: true,
-              controller: _pageController,
-              onPageChanged: (page) {
-                setState(() {
-                  activePage = page;
-                });
-                },
-              itemBuilder: (context, pagePosition) {
-                return Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 5),
-                    image: DecorationImage(
-                        image:  AssetImage('assets/${test[pagePosition].image}'),
-                        fit: BoxFit.fill
+    return Expanded(
+      child: PageView.builder(
+          itemCount: test.length,
+          pageSnapping: true,
+          controller: _pageController,
+          onPageChanged: (page) {
+            setState(() {
+              activePage = page;
+            });
+            },
+          itemBuilder: (context, pagePosition) {
+            return Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push<void>(
+                      MaterialPageRoute(builder: (context) => ItemDetailView(
+                        image: 'assets/${test[pagePosition].image}',
+                        name: test[pagePosition].name,
+                        price: test[pagePosition].price,
+                      )),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 5)
+                    ),
+                    child: CircleAvatar(
+                      radius: MediaQuery.of(context).size.height / 6,
+                      backgroundImage: AssetImage('assets/${test[pagePosition].image}'),
+                      backgroundColor: Colors.transparent,
                     ),
                   ),
-                );
-              }),
-        ),
+                ),
 
-        SizedBox(height: 20,),
-        Text('${test[activePage].name}',
-          style: TextStyle(fontFamily: 'JosefinSansBold', fontSize: 25,),
-        ),
+                SizedBox(height: 20,),
 
-        SizedBox(height: 10,),
-        Text('\$ ${test[activePage].price}',
-          style: TextStyle(fontFamily: 'JosefinSansBold', fontSize: 25, color: kOrangeColor),
-        ),
-      ],
+                Text(test[pagePosition].name,
+                  style: TextStyle(fontFamily: 'JosefinSansBold', fontSize: 25,),
+                ),
+
+                SizedBox(height: 5,),
+
+                Text('\$ ${test[pagePosition].price}',
+                  style: TextStyle(fontFamily: 'JosefinSansBold', fontSize: 25, color: kOrangeColor),
+                ),
+              ],
+            );
+          }),
     );
   }
 }
